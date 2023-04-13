@@ -165,6 +165,7 @@ if (NOT NRD_DISABLE_SHADER_COMPILATION)
         --sourceDir "Shaders/Source"
         --allResourcesBound
         --WX
+        -m 6_6
         -c Shaders.cfg
         -o "${NRD_SHADERS_PATH}"
         -I "External/MathLib"
@@ -190,7 +191,7 @@ if (NOT NRD_DISABLE_SHADER_COMPILATION)
         set (SHADERMAKE_COMMANDS ${SHADERMAKE_COMMANDS} COMMAND ShaderMake -p SPIRV --compiler "${DXC_SPIRV_PATH}" ${SHADERMAKE_GENERAL_ARGS}
             --sRegShift 100
             --tRegShift 200
-            --bRegShift 300
+            --bRegShift 0
             --uRegShift 400
         )
     endif ()

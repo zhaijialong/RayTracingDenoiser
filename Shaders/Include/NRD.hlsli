@@ -94,20 +94,27 @@ NOTE: if "roughness" is needed as an input parameter use is as "isDiffuse ? 1 : 
 // DXC
 #elif( defined( NRD_COMPILER_DXC ) || defined( __hlsl_dx_compiler ) )
 
-    #define NRD_CONSTANTS_START                                                         cbuffer globalConstants : register( b0, NRD_MERGE_TOKENS( space, NRD_CONSTANT_BUFFER_SPACE_INDEX ) ) {
+    cbuffer globalHeapIndices : register(b1)
+    {
+        uint4 gInputTextureIndices[7];
+        uint4 gOutputTextureIndices[4];
+        uint4 gSamplerIndices;
+    };
+
+    #define NRD_CONSTANTS_START                                                         cbuffer globalConstants : register( b2, NRD_MERGE_TOKENS( space, NRD_CONSTANT_BUFFER_SPACE_INDEX ) ) {
     #define NRD_CONSTANT( constantType, constantName )                                  constantType constantName;
     #define NRD_CONSTANTS_END                                                           };
 
     #define NRD_INPUT_TEXTURE_START
-    #define NRD_INPUT_TEXTURE( resourceType, resourceName, regName, bindingIndex )      resourceType resourceName : register( regName ## bindingIndex, NRD_MERGE_TOKENS( space, NRD_RESOURCES_SPACE_INDEX ) );
+    #define NRD_INPUT_TEXTURE( resourceType, resourceName, regName, bindingIndex )      static resourceType resourceName = ResourceDescriptorHeap[gInputTextureIndices[bindingIndex/4][bindingIndex%4]];
     #define NRD_INPUT_TEXTURE_END
 
     #define NRD_OUTPUT_TEXTURE_START
-    #define NRD_OUTPUT_TEXTURE( resourceType, resourceName, regName, bindingIndex )     resourceType resourceName : register( regName ## bindingIndex, NRD_MERGE_TOKENS( space, NRD_RESOURCES_SPACE_INDEX ) );
+    #define NRD_OUTPUT_TEXTURE( resourceType, resourceName, regName, bindingIndex )     static resourceType resourceName = ResourceDescriptorHeap[gOutputTextureIndices[bindingIndex/4][bindingIndex%4]];
     #define NRD_OUTPUT_TEXTURE_END
 
     #define NRD_SAMPLER_START
-    #define NRD_SAMPLER( resourceType, resourceName, regName, bindingIndex )            resourceType resourceName : register( regName ## bindingIndex, NRD_MERGE_TOKENS( space, NRD_SAMPLERS_SPACE_INDEX ) );
+    #define NRD_SAMPLER( resourceType, resourceName, regName, bindingIndex )            static resourceType resourceName = SamplerDescriptorHeap[gSamplerIndices[bindingIndex%4]];
     #define NRD_SAMPLER_END
 
     #define NRD_EXPORT
