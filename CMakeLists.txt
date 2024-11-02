@@ -193,6 +193,7 @@ if (NOT NRD_DISABLE_SHADER_COMPILATION)
             --tRegShift 200
             --bRegShift 0
             --uRegShift 400
+            -X "-fvk-bind-resource-heap 0 1 -fvk-bind-sampler-heap 0 2"
         )
     endif ()
 
